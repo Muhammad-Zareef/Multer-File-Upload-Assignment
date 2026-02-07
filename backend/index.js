@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
-const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const cors = require('cors');
+const path = require("path");
 require("dotenv").config();
 
 const PORT = process.env.PORT || 3000;
@@ -13,16 +13,9 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 
-(async function () {
-    try {
-        await connectDB();
-        console.log("DB connected successfully");
-    } catch (error) {
-        console.error("DB connection failed:", error);
-    }
-})();
+// Serve uploaded images statically
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use('/api', userRoutes);
 
